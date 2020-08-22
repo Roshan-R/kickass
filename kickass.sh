@@ -1,0 +1,88 @@
+#!/bin/bash
+
+Help(){
+    echo
+    echo "hell.sh - Make assignment latext files"
+    echo
+    echo "Syntax : hell.sh file.c"
+    echo
+    echo "file.c : C source code"
+}
+
+if [[ "$#" != 1 ]];then
+    Help
+fi
+
+source="$1"
+
+if [[ ! -e "$source" ]];then
+    echo "Input an existing file"
+    exit
+else
+    if [[ "$source" == *".c" ]];then
+        base=$(basename $source .c )
+        dirx="$base.x"
+        if [[ -e "$dirx"  ]];then
+            echo "A directoy named $dirx already exists!"
+            echo "Remove and try again"
+            echo "Exiting Script"
+            exit
+        fi
+        echo
+        echo "--Detected C Code--"
+        echo
+        mkdir $dirx
+        cp $source "$dirx/"
+        cp baseout.tex "$dirx/" 
+        cd $dirx
+        
+        echo 
+        echo "--Compiling code using gcc --"
+        echo
+        gcc "$source" -o "$base"
+        echo 
+        echo "--Compilation completed-- "
+        echo 
+
+        echo "--Opening bash for making output--"
+        sleep 0.6
+        echo "Press any key to continue.."
+        read
+        clear
+        bash
+        spectacle -b -r -o "$base.png"
+        echo
+        echo "--Created Screenshot sucessfully--"
+
+        echo 
+        echo "--Making .tex file--"
+        echo
+
+        code=$(cat "$source")
+        (awk -v r="$code" '{gsub(/--CODE--/,r)}1' baseout.tex) > temp
+        sed -i "s/--OUTPUT.png--/$base.png/g" temp
+        algo=$(ctoalgo "$source")
+        (awk -v r="$algo" '{gsub(/--ALGORITHM--/,r)}1' temp) > "$base.tex"
+        rm temp
+        rm baseout.tex
+
+        echo
+        echo -n "Do you want to edit the document? (y/n) : "
+        read doc
+
+        if [[ "$doc" == 'y' ]];then
+            echo
+            echo "--Opening VIM--"
+            nvim "$base.tex"
+        fi
+
+        echo -n "Do you want to compile the pdf using pdflatex? (y/n) : "
+        read inp
+        if [[ "$inp" == 'y' ]];then
+            pdflatex "$base.tex"
+            echo "Created .pdf file sucessfully"
+        fi
+
+        
+    fi
+fi
