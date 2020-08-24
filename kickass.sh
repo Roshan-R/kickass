@@ -2,18 +2,47 @@
 
 Help(){
     echo
-    echo "hell.sh - Make assignment latext files"
+    echo "kickass - Make assignment latext files"
     echo
-    echo "Syntax : hell.sh file.c"
+    echo "Syntax : kickass file.c"
     echo
     echo "file.c : C source code"
 }
 
+Install(){
+    echo "Welcome to KickASs ! "
+    echo
+    echo -n "Enter your name : "
+    read name
+    echo -n "Enter your editor of choice : "
+    read editor
+    echo "Creating config file"
+    mkdir -p "$confdir"
+    touch "$config"
+    echo "name=\"$name\"" >> "$config"
+    echo "editor=\"$editor\"" >> "$config"
+    echo "Done sucessfully"
+    echo "Reload the script.."
+    exit
+}
+
+confdir="/home/$USER/.config/kickass"
+config="$confdir/kickass.conf"
+
+if [[ ! -e "$confdir" ]];then
+    Install
+fi
+
 if [[ "$#" != 1 ]];then
+    source "$config"
+    echo "$name"
+    echo $editor
     Help
+    exit
 fi
 
 source="$1"
+
 
 if [[ ! -e "$source" ]];then
     echo "Input an existing file"
