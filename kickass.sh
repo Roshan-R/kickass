@@ -15,15 +15,14 @@ Install(){
     exit
 }
 
+confdir="/home/$USER/.config/kickass"
+config="$confdir/kickass.conf"
 
 if [[ ! -e "$confdir" ]];then
     Install
 fi
 
 if [[ "$#" != 1 ]];then
-    source "$config"
-    echo "$name"
-    echo $editor
     Help
     exit
 fi
@@ -35,12 +34,13 @@ if [[ ! -e "$source" ]];then
     echo "Input an existing file"
     exit
 else
+    source "$config"
     if [[ "$source" == *".c" ]];then
         base=$(basename $source .c )
         dirx="$base.x"
         if [[ -e "$dirx"  ]];then
             echo "A directoy named $dirx already exists!"
-            echo "Remove and try again"
+            echo "Remove the directory and try again"
             echo "Exiting Script"
             exit
         fi
@@ -74,11 +74,18 @@ else
         echo "--Making .tex file--"
         echo
 
+        #Substituing code 
         code=$(cat "$source")
         (awk -v r="$code" '{gsub(/--CODE--/,r)}1' baseout.tex) > temp
+
+        #Substituing Screenshot 
         sed -i "s/--OUTPUT.png--/$base.png/g" temp
         algo=$(ctoalgo "$source")
+
+        #Substituing Algorithm 
         (awk -v r="$algo" '{gsub(/--ALGORITHM--/,r)}1' temp) > "$base.tex"
+
+        #cleaning temp files
         rm temp
         rm baseout.tex
 
@@ -88,8 +95,9 @@ else
 
         if [[ "$doc" == 'y' ]];then
             echo
-            echo "--Opening VIM--"
-            nvim "$base.tex"
+            echo "--Opening $editor --"
+            sleep 0.6
+            $editor "$base.tex"
         fi
 
         echo -n "Do you want to compile the pdf using pdflatex? (y/n) : "
