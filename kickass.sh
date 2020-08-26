@@ -18,7 +18,7 @@ Install(){
 confdir="/home/$USER/.config/kickass"
 config="$confdir/kickass.conf"
 
-if [[ ! -e "$confdir" ]];then
+if [[ ! -e "$config" ]];then
     Install
 fi
 
@@ -66,7 +66,7 @@ else
         read
         clear
         bash
-        spectacle -b -r -o "$base.png"
+        spectacle -b -n -r -o "$base.png"
         echo
         echo "--Created Screenshot sucessfully--"
 
@@ -84,6 +84,10 @@ else
 
         #Substituing Algorithm 
         (awk -v r="$algo" '{gsub(/--ALGORITHM--/,r)}1' temp) > "$base.tex"
+
+        #Substituing Name 
+        sed -i "s/--NAME--/"$name"/g" baseout.tex
+
 
         #cleaning temp files
         rm temp

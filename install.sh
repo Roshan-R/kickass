@@ -8,14 +8,31 @@ Install(){
     echo "Creating config file"
     mkdir -p "$confdir"
     touch "$config"
-    echo "name=\"$name\"" >> "$config"
+    echo "name=\"$name\"" > "$config"
     echo "editor=\"$editor\"" >> "$config"
-    echo "Done sucessfully"
-    echo "Reload the script.."
+    echo "$configdir"
+    sudo cp kickass.sh /usr/bin/kickass
+    echo "Installed Sucessfully!"
     exit
 }
 
-confdir="/home/$USER/.config/kickass"
+sudoer=$(echo $SUDO_USER)
+confdir="/home/$sudoer/.config/kickass"
 config="$confdir/kickass.conf"
 
-Install
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root" 
+    exit 1
+fi
+
+if [[ ! -e "$confdir" ]];then
+    Install
+else
+    echo "you have already installed the script"
+    echo -n "Do you want to reinstall ? (y/n) : "
+    read inp
+    if [[ "$inp" == 'y' ]];then
+        Install
+    else exit
+    fi
+fi
