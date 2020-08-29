@@ -12,7 +12,8 @@ which can be used to generate a .pdf file.
 
 run the installation script 
 ```bash
-sudo ./install.sh
+./install.sh
+sudo cp kickass.sh /usr/bin/kickass
 ```
 this will install kickass to `/usr/bin`.
 
