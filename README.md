@@ -24,6 +24,8 @@ For converting .tex files to .pdf format, make sure you have these packages inst
 
 `texlive-core texlive-formatsextra texlive-latexextra texlive-pictures texlive-science`
 
+and for screenshot, install `maim`
+
 
 
 
