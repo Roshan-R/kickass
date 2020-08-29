@@ -6,7 +6,7 @@ which can be used to generate a .pdf file.
 
 # Demo
 
-[gif](demo.gif)
+![](demo.gif)
 
 # Installation
 
