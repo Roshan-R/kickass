@@ -11,19 +11,17 @@ Install(){
     echo "name=\"$name\"" > "$config"
     echo "editor=\"$editor\"" >> "$config"
     echo "$configdir"
-    sudo cp kickass.sh /usr/bin/kickass
+    cat "$config"
+    cp baseout.tex "$confdir/baseout.tex"
     echo "Installed Sucessfully!"
+    echo "To access kickass from anywhere, use sudo cp kickass.sh /usr/bin/kickass"
     exit
 }
 
-sudoer=$(echo $SUDO_USER)
-confdir="/home/$sudoer/.config/kickass"
+confdir="/home/$USER/.config/kickass"
+echo $confdir
 config="$confdir/kickass.conf"
-
-if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root" 
-    exit 1
-fi
+echo $config
 
 if [[ ! -e "$confdir" ]];then
     Install

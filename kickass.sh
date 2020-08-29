@@ -17,6 +17,7 @@ Install(){
 
 confdir="/home/$USER/.config/kickass"
 config="$confdir/kickass.conf"
+baseout="$confdir/baseout.tex"
 
 if [[ ! -e "$config" ]];then
     Install
@@ -28,7 +29,6 @@ if [[ "$#" != 1 ]];then
 fi
 
 source="$1"
-
 
 if [[ ! -e "$source" ]];then
     echo "Input an existing file"
@@ -49,7 +49,7 @@ else
         echo
         mkdir $dirx
         cp $source "$dirx/"
-        cp baseout.tex "$dirx/" 
+        cp "$baseout" "$dirx/" 
         cd $dirx
         
         echo 
@@ -66,7 +66,8 @@ else
         read
         clear
         bash
-        spectacle -b -n -r -o "$base.png"
+        maim -s "$base.png"
+        #spectacle -s -b -n -r -o "$base.png"
         echo
         echo "--Created Screenshot sucessfully--"
 
@@ -86,7 +87,11 @@ else
         (awk -v r="$algo" '{gsub(/--ALGORITHM--/,r)}1' temp) > "$base.tex"
 
         #Substituing Name 
-        sed -i "s/--NAME--/"$name"/g" baseout.tex
+        sed -i "s/--NAME--/$name/g" "$base.tex" 
+        
+        #Replacing NULL
+        sed -i "s/\x00/NULL/g" "$base.tex"
+
 
 
         #cleaning temp files
