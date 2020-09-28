@@ -23,18 +23,36 @@ if [[ ! -e "$config" ]];then
     Install
 fi
 
-if [[ "$#" != 1 ]];then
+if [[ "$#" < 1 ]];then
     Help
     exit
 fi
 
-source="$1"
+source="${@: -1}"
+optstring=":S"
+screenshot=1
+
+while getopts ${optstring} arg; do
+    case "${arg}" in
+        S)  echo "No Screenshot called" 
+            screenshot=0 ;;
+        #?)
+            #echo "Invalid option: -${OPTARG}."
+            #echo
+            #usage
+            #;;
+    esac
+done
+
 
 if [[ ! -e "$source" ]];then
     echo "Input an existing file"
     exit
 else
     source "$config"
+    if [[ -d "$source" ]];then
+        echo "This is a directoy"
+    fi
     if [[ "$source" == *".c" ]];then
         base=$(basename $source .c )
         dirx="$base.x"
@@ -59,17 +77,18 @@ else
         echo 
         echo "--Compilation completed-- "
         echo 
-
-        echo "--Opening bash for making output--"
-        sleep 0.6
-        echo "Press any key to continue.."
-        read
-        clear
-        bash
-        maim -s "$base.png"
-        #spectacle -s -b -n -r -o "$base.png"
-        echo
-        echo "--Created Screenshot sucessfully--"
+        if [[ $screenshot == 1 ]];then
+            echo "--Opening bash for making output--"
+            sleep 0.6
+            echo "Press any key to continue.."
+            read
+            clear
+            bash
+            maim -s "$base.png"
+            #spectacle -s -b -n -r -o "$base.png"
+            echo
+            echo "--Created Screenshot sucessfully--"
+        fi;
 
         echo 
         echo "--Making .tex file--"
